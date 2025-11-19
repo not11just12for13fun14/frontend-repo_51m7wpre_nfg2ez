@@ -1,55 +1,61 @@
 import React, { useState } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Features from './components/Features'
-import Menu from './components/Menu'
-import Gallery from './components/Gallery'
-import Location from './components/Location'
-import Contact from './components/Contact'
+import Footer from './components/Footer'
+import HomePage from './pages/Home'
+import MenuPage from './pages/Menu'
+import AboutPage from './pages/About'
+import GalleryPage from './pages/Gallery'
+import ContactPage from './pages/Contact'
+import LocationPage from './pages/Location'
 
 function App() {
   const [showReserveToast, setShowReserveToast] = useState(false)
+  const navigate = useNavigate()
 
   const handleReserve = () => {
+    navigate('/contact')
     setShowReserveToast(true)
-    setTimeout(() => setShowReserveToast(false), 2500)
-  }
-
-  // Placeholder details; if you share the exact place details, I'll wire them in.
-  const details = {
-    name: 'Your Restaurant',
-    tagline: 'Elevated dining with seasonal flavors and warm hospitality.',
-    phone: '',
-    address: 'Share the exact address to update',
-    hours: 'Mon–Thu 12:00–22:00\nFri–Sat 12:00–23:00\nSun 12:00–21:00',
-    mapsUrl: 'https://maps.app.goo.gl/79azUDqwpz23zZW5',
+    setTimeout(() => setShowReserveToast(false), 2000)
   }
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-[#0b2b24]">
       <Navbar onReserve={handleReserve} />
 
       <main className="pt-16">
-        <Hero name={details.name} tagline={details.tagline} ctaText="Reserve Now" onReserve={handleReserve} />
-        <Features />
-        <Menu />
-        <Gallery />
-        <Location address={details.address} phone={details.phone} hours={details.hours} mapsUrl={details.mapsUrl} />
-        <Contact onSubmit={() => setShowReserveToast(true)} />
+        <Routes>
+          <Route path="/" element={<HomePage onReserve={handleReserve} />} />
+          <Route path="/menu" element={<MenuPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/contact" element={<ContactPage onReserved={() => setShowReserveToast(true)} />} />
+          <Route path="/location" element={<LocationPage />} />
+        </Routes>
       </main>
+
+      {/* Floating Reserve button */}
+      <button
+        onClick={handleReserve}
+        className="fixed bottom-6 right-6 px-5 py-3 rounded-full bg-[#c5a344] text-[#0b2b24] font-semibold shadow-lg hover:brightness-110 transition"
+      >
+        Reserve Now
+      </button>
 
       {/* Toast */}
       {showReserveToast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white/90 shadow-lg">
-          Thanks! We will confirm your reservation shortly.
+        <div className="fixed bottom-24 right-6 px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white/90 shadow-lg">
+          Opening reservation form…
         </div>
       )}
 
-      {/* Soft background accents */}
+      {/* Background accents */}
       <div className="pointer-events-none fixed inset-0 -z-10">
-        <div className="absolute -top-32 left-10 w-[28rem] h-[28rem] bg-rose-500/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 right-10 w-[30rem] h-[30rem] bg-amber-500/10 rounded-full blur-3xl" />
+        <div className="absolute -top-32 left-10 w-[28rem] h-[28rem] bg-[#c5a344]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 right-10 w-[30rem] h-[30rem] bg-[#c5a344]/10 rounded-full blur-3xl" />
       </div>
+
+      <Footer />
     </div>
   )
 }
